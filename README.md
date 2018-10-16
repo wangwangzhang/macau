@@ -6,7 +6,7 @@ sudo apt-get install libopenblas-dev autoconf gfortran
 sudo apt-get install libhdf5-serial-dev
 
 # checkout and install Macau
-git clone https://github.com/jaak-s/macau.git
+git clone https://github.com/wangwangzhang/macau
 cd macau
 python setup.py install --user
 ```
