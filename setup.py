@@ -111,7 +111,7 @@ def is_openblas_installed(libraries):
     assert isinstance(compiler, distutils.ccompiler.CCompiler)
     distutils.sysconfig.customize_compiler(compiler)
     compiler.add_include_dir("/usr/local/opt/openblas/include")
-    ldirs = ["/opt/OpenBLAS/lib", "/usr/local/lib", "/usr/lib/openblas-base", "/usr/local/opt/openblas/lib", "/usr/local/opt/gcc/lib/gcc/5"]
+    ldirs = ["/opt/OpenBLAS/lib", "/usr/local/lib", "/usr/lib/openblas-base", "/usr/local/opt/openblas/lib", "/usr/local/opt/gcc/lib/gcc/5", "/usr/lib/x86_64-linux-gnu"]
 
     try:
         compiler.link_executable(
@@ -234,16 +234,16 @@ eigen_url  = "http://bitbucket.org/eigen/eigen/get/3.3.3.tar.bz2"
 eigen_inner = "eigen-eigen-67e894c6cd8f"
 
 blas_libs = get_blas_libs()
-inc = ['lib/macau-cpp', eigen_dest, 'lib/libfastsparse', np.get_include(), get_python_inc(), "/usr/local/include", "/usr/local/opt/openblas/include"]
-ldirs = ["/opt/OpenBLAS/lib", "/usr/local/lib", "/usr/lib/openblas-base", "/usr/local/opt/openblas/lib", "/usr/local/opt/gcc/lib/gcc/5"]
+inc = ['/usr/include/hdf5/serial/', 'lib/macau-cpp', eigen_dest, 'lib/libfastsparse', np.get_include(), get_python_inc(), "/usr/local/include", "/usr/local/opt/openblas/include"]
+ldirs = ["/opt/OpenBLAS/lib", "/usr/local/lib", "/usr/lib/x86_64-linux-gnu/hdf5/serial", "/usr/lib/openblas-base", "/usr/local/opt/openblas/lib", "/usr/local/opt/gcc/lib/gcc/5"]
 
 libmacau = ('macau-cpp', dict(
     package='macau',
     sources = list(filter(lambda a: a.find("tests.cpp") < 0 and a.find("macau_mpi.cpp") < 0,
                                glob('lib/macau-cpp/*.cpp'))),
     include_dirs = inc,
-    extra_compile_args = ['-fopenmp', '-O3', '-fstrict-aliasing', '-std=c++11'],
-    #extra_link_args = ['-fopenmp'],
+    extra_compile_args = ['-fopenmp', '-O3', '-fstrict-aliasing', '-std=c++11', '-static'],
+    extra_link_args = ['-lhdf5', '-lhdf5_hl', '-lhdf5_cpp', '-lhdf5_hl_cpp', '-lhdf5_serial', '-lhdf5_serial_hl'],
     language = "c++"
     ))
 
@@ -255,8 +255,8 @@ ext_modules=[
               libraries = blas_libs,
               library_dirs = ldirs,
               runtime_library_dirs = ldirs,
-              extra_compile_args = ['-std=c++11', '-fopenmp'],
-              extra_link_args = ['-fopenmp'],
+              extra_compile_args = ['-std=c++11', '-fopenmp', '-static'],
+              extra_link_args = ['-fopenmp', '-lhdf5', '-lhdf5_hl', '-lhdf5_cpp', '-lhdf5_hl_cpp', '-lhdf5_serial', '-lhdf5_serial_hl'],
               language = "c++")
 ]
 

@@ -8,9 +8,12 @@
 #include <fstream>
 #include <iomanip>
 #include <memory>
-
+#include "H5Cpp.h"
 #include "sparsetensor.h"
+#include "eigen3-hdf5.hpp"
 
+using namespace std;
+using namespace H5;
 inline double tick() {
     return std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::high_resolution_clock::now().time_since_epoch()).count(); 
 }
@@ -170,6 +173,12 @@ inline void writeToCSVfile(std::string filename, Eigen::MatrixXd matrix) {
   const static Eigen::IOFormat csvFormat(6, Eigen::DontAlignCols, ",", "\n");
   std::ofstream file(filename.c_str());
   file << matrix.format(csvFormat);
+}
+
+inline void writeToHdf5file(std::string filename, std::string name, Eigen::MatrixXd mat) {
+	H5::H5File file( filename, H5F_ACC_RDWR );
+	EigenHDF5::save(file, name, mat);
+  
 }
 
 inline std::string to_string_with_precision(const double a_value, const int n = 6)

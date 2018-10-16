@@ -44,7 +44,7 @@ class ILatentPrior {
     void virtual update_prior(const Eigen::MatrixXd &U) {};
     virtual double getLinkNorm() { return NAN; };
     virtual double getLinkLambda() { return NAN; };
-    virtual void saveModel(std::string prefix) {};
+    virtual void saveModel(std::string save_prefix, std::string prefix) {};
     virtual ~ILatentPrior() {};
 };
 
@@ -75,7 +75,7 @@ class BPMFPrior : public ILatentPrior {
     void sample_latents(double noisePrecision, TensorData & data,
                                 std::vector< std::unique_ptr<Eigen::MatrixXd> > & samples, int mode, const int num_latent) override;
     void update_prior(const Eigen::MatrixXd &U) override;
-    void saveModel(std::string prefix) override;
+    void saveModel(std::string save_prefix, std::string prefix) override;
 };
 
 /** Prior without side information (pure BPMF) */
@@ -121,7 +121,7 @@ class MacauPrior : public ILatentPrior {
     void sample_beta(const Eigen::MatrixXd &U);
     void setLambdaBeta(double lb) { lambda_beta = lb; };
     void setTol(double t) { tol = t; };
-    void saveModel(std::string prefix) override;
+    void saveModel(std::string save_prefix, std::string prefix) override;
 };
 
 std::pair<double,double> posterior_lambda_beta(Eigen::MatrixXd & beta, Eigen::MatrixXd & Lambda_u, double nu, double mu);

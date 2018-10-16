@@ -304,14 +304,17 @@ void MacauPrior<FType>::sample_latents(ProbitNoise & noise, Eigen::MatrixXd &U, 
 
 }
 
-void BPMFPrior::saveModel(std::string prefix) {
-  writeToCSVfile(prefix + "-latentmean.csv", mu);
+void BPMFPrior::saveModel(std::string save_prefix, std::string prefix) {
+  //writeToCSVfile(prefix + "-latentmean.csv", mu);
+  writeToHdf5file(save_prefix, prefix + "-latentmean", mu);
 }
 
 template<class FType>
-void MacauPrior<FType>::saveModel(std::string prefix) {
-  writeToCSVfile(prefix + "-latentmean.csv", mu);
-  writeToCSVfile(prefix + "-link.csv", beta);
+void MacauPrior<FType>::saveModel(std::string save_prefix, std::string prefix) {
+  //writeToCSVfile(prefix + "-latentmean.csv", mu);
+  //writeToCSVfile(prefix + "-link.csv", beta);
+  writeToHdf5file(save_prefix, prefix + "-latentmean", mu);
+  writeToHdf5file(save_prefix, prefix + "-link", mu);
 }
 
 std::pair<double,double> posterior_lambda_beta(Eigen::MatrixXd & beta, Eigen::MatrixXd & Lambda_u, double nu, double mu) {

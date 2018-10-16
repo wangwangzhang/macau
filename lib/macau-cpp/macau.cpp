@@ -23,6 +23,7 @@
 #include "latentprior.h"
 #include "noisemodels.h"
 #include "sparsetensor.h"
+#include "eigen3-hdf5.hpp"
 
 using namespace std; 
 using namespace Eigen;
@@ -192,8 +193,10 @@ void MacauX<DType, NType>::saveModel(int isample) {
   string fprefix = save_prefix + "-sample" + std::to_string(isample) + "-";
   // saving latent matrices
   for (unsigned int i = 0; i < samples.size(); i++) {
-    writeToCSVfile(fprefix + "U" + std::to_string(i+1) + "-latents.csv", *samples[i]);
-    priors[i]->saveModel(fprefix + "U" + std::to_string(i+1));
+    //writeToCSVfile(fprefix + "U" + std::to_string(i+1) + "-latents.csv", *samples[i]);
+	writeToHdf5file(save_prefix, fprefix + "U" + std::to_string(i+1) + "-latents", *samples[i]);
+    priors[i]->saveModel(save_prefix, fprefix + "U" + std::to_string(i+1));
+	
   }
 }
 
@@ -201,7 +204,10 @@ template<class DType, class NType>
 void MacauX<DType, NType>::saveGlobalParams() {
   VectorXd means(1);
   means << data.getMeanValue();
-  writeToCSVfile(save_prefix + "-meanvalue.csv", means);
+  Eigen::MatrixXd mat = means;
+  //writeToCSVfile(save_prefix + "-meanvalue.csv", means);
+  H5::H5File file( save_prefix, H5F_ACC_TRUNC );
+  EigenHDF5::save(file, save_prefix + "-meanvalue", mat);
 }
 
 Macau* make_macau_probit(int nmodes, int num_latent) {
